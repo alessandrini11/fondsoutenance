@@ -60,11 +60,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $sex = null;
 
     #[ORM\Column]
-    private ?int $telephone = null;
+    private ?string $telephone = null;
 
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
+    private $plainpassword = null;
     public function getId(): ?int
     {
         return $this->id;
@@ -171,12 +172,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getTelephone(): ?int
+    public function getTelephone(): ?string
     {
         return $this->telephone;
     }
 
-    public function setTelephone(int $telephone): self
+    public function setTelephone(string $telephone): self
     {
         $this->telephone = $telephone;
 
@@ -191,6 +192,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of plainpassword
+     */ 
+    public function getPlainpassword()
+    {
+        return $this->plainpassword;
+    }
+
+    /**
+     * Set the value of plainpassword
+     *
+     * @return  self
+     */ 
+    public function setPlainpassword($plainpassword)
+    {
+        $this->plainpassword = $plainpassword;
 
         return $this;
     }
