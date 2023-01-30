@@ -26,13 +26,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // self::ROLE_SUPER_ADMIN => "Super admin"
     ];
 
-    const HOMME = 'homme';
-    const FEMME = 'femme';
+    const MAN = 'man';
+    const WOMAN = 'woman';
 
     const sexs = [
-        self::HOMME => 'homme',
-        self::FEMME => 'femme',
+        self::MAN => 'homme',
+        self::WOMAN => 'femme',
     ];
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
