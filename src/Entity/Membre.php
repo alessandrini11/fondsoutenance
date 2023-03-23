@@ -11,6 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
 class Membre
 {
     use DateTrait;
+    const HEAD = 'head';
+    const ASSISTANT = 'assistant';
+    const POSTES = [
+        self::HEAD => 'chef',
+        self::ASSISTANT => 'assistant' 
+    ];
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
