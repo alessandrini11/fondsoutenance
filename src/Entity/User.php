@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use App\Trait\DateTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -67,6 +69,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $isVerified = false;
 
     private $plainpassword = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $filiere = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $poste = null;
+
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Cotisation::class)]
+    private Collection $createdCotisations;
+
+    #[ORM\OneToMany(mappedBy: 'updatedBy', targetEntity: Cotisation::class)]
+    private Collection $updatedCotisations;
+
+    #[ORM\OneToMany(mappedBy: 'originator', targetEntity: Cotisation::class)]
+    private Collection $cotisations;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Membre::class)]
+    private Collection $membres;
+
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Commission::class)]
+    private Collection $createdCommission;
+
+    #[ORM\OneToMany(mappedBy: 'updatedBy', targetEntity: Commission::class)]
+    private Collection $updatedCommissions;
+
+    public function __construct()
+    {
+        $this->createdCotisations = new ArrayCollection();
+        $this->updatedCotisations = new ArrayCollection();
+        $this->cotisations = new ArrayCollection();
+        $this->membres = new ArrayCollection();
+        $this->createdCommission = new ArrayCollection();
+        $this->updatedCommissions = new ArrayCollection();
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -213,6 +249,210 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPlainpassword($plainpassword)
     {
         $this->plainpassword = $plainpassword;
+
+        return $this;
+    }
+
+    public function getFiliere(): ?string
+    {
+        return $this->filiere;
+    }
+
+    public function setFiliere(string $filiere): self
+    {
+        $this->filiere = $filiere;
+
+        return $this;
+    }
+
+    public function getPoste(): ?string
+    {
+        return $this->poste;
+    }
+
+    public function setPoste(string $poste): self
+    {
+        $this->poste = $poste;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cotisation>
+     */
+    public function getCreatedCotisations(): Collection
+    {
+        return $this->createdCotisations;
+    }
+
+    public function addCreatedCotisation(Cotisation $createdCotisation): self
+    {
+        if (!$this->createdCotisations->contains($createdCotisation)) {
+            $this->createdCotisations->add($createdCotisation);
+            $createdCotisation->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreatedCotisation(Cotisation $createdCotisation): self
+    {
+        if ($this->createdCotisations->removeElement($createdCotisation)) {
+            // set the owning side to null (unless already changed)
+            if ($createdCotisation->getCreatedBy() === $this) {
+                $createdCotisation->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cotisation>
+     */
+    public function getUpdatedCotisations(): Collection
+    {
+        return $this->updatedCotisations;
+    }
+
+    public function addUpdatedCotisation(Cotisation $updatedCotisation): self
+    {
+        if (!$this->updatedCotisations->contains($updatedCotisation)) {
+            $this->updatedCotisations->add($updatedCotisation);
+            $updatedCotisation->setUpdatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUpdatedCotisation(Cotisation $updatedCotisation): self
+    {
+        if ($this->updatedCotisations->removeElement($updatedCotisation)) {
+            // set the owning side to null (unless already changed)
+            if ($updatedCotisation->getUpdatedBy() === $this) {
+                $updatedCotisation->setUpdatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cotisation>
+     */
+    public function getCotisations(): Collection
+    {
+        return $this->cotisations;
+    }
+
+    public function addCotisation(Cotisation $cotisation): self
+    {
+        if (!$this->cotisations->contains($cotisation)) {
+            $this->cotisations->add($cotisation);
+            $cotisation->setOriginator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCotisation(Cotisation $cotisation): self
+    {
+        if ($this->cotisations->removeElement($cotisation)) {
+            // set the owning side to null (unless already changed)
+            if ($cotisation->getOriginator() === $this) {
+                $cotisation->setOriginator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Membre>
+     */
+    public function getMembres(): Collection
+    {
+        return $this->membres;
+    }
+
+    public function addMembre(Membre $membre): self
+    {
+        if (!$this->membres->contains($membre)) {
+            $this->membres->add($membre);
+            $membre->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMembre(Membre $membre): self
+    {
+        if ($this->membres->removeElement($membre)) {
+            // set the owning side to null (unless already changed)
+            if ($membre->getUser() === $this) {
+                $membre->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commission>
+     */
+    public function getCreatedCommission(): Collection
+    {
+        return $this->createdCommission;
+    }
+
+    public function addCreatedCommission(Commission $createdCommission): self
+    {
+        if (!$this->createdCommission->contains($createdCommission)) {
+            $this->createdCommission->add($createdCommission);
+            $createdCommission->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreatedCommission(Commission $createdCommission): self
+    {
+        if ($this->createdCommission->removeElement($createdCommission)) {
+            // set the owning side to null (unless already changed)
+            if ($createdCommission->getCreatedBy() === $this) {
+                $createdCommission->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commission>
+     */
+    public function getUpdatedCommissions(): Collection
+    {
+        return $this->updatedCommissions;
+    }
+
+    public function addUpdatedCommission(Commission $updatedCommission): self
+    {
+        if (!$this->updatedCommissions->contains($updatedCommission)) {
+            $this->updatedCommissions->add($updatedCommission);
+            $updatedCommission->setUpdatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUpdatedCommission(Commission $updatedCommission): self
+    {
+        if ($this->updatedCommissions->removeElement($updatedCommission)) {
+            // set the owning side to null (unless already changed)
+            if ($updatedCommission->getUpdatedBy() === $this) {
+                $updatedCommission->setUpdatedBy(null);
+            }
+        }
 
         return $this;
     }
