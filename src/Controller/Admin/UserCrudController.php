@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -39,6 +40,8 @@ class UserCrudController extends AbstractCrudController
             FormField::addPanel('Account Details'),
             EmailField::new('email'),
             TextField::new('telephone'),
+            TextField::new('filiere'),
+            AssociationField::new('cotisations'),
             // AssociationField::new('buildings')->hideOnForm(),
             TextField::new('plainPassword')->setRequired(false)->hideOnIndex(),
             ChoiceField::new('roles')->allowMultipleChoices()->setChoices(array_flip(User::ROLES)),

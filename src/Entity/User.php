@@ -94,6 +94,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'updatedBy', targetEntity: Commission::class)]
     private Collection $updatedCommissions;
 
+    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Depenses::class)]
+    private Collection $createdDepenses;
+
+    #[ORM\OneToMany(mappedBy: 'updatedBy', targetEntity: Depenses::class)]
+    private Collection $updatedDepenses;
+
     public function __construct()
     {
         $this->createdCotisations = new ArrayCollection();
@@ -102,6 +108,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->membres = new ArrayCollection();
         $this->createdCommission = new ArrayCollection();
         $this->updatedCommissions = new ArrayCollection();
+        $this->createdDepenses = new ArrayCollection();
+        $this->updatedDepenses = new ArrayCollection();
     }
     public function getId(): ?int
     {
@@ -451,6 +459,70 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($updatedCommission->getUpdatedBy() === $this) {
                 $updatedCommission->setUpdatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+    public function __toString()
+    {
+        return "$this->firstname $this->lastname";
+    }
+
+    /**
+     * @return Collection<int, Depenses>
+     */
+    public function getCreatedDepenses(): Collection
+    {
+        return $this->createdDepenses;
+    }
+
+    public function addCreatedDepense(Depenses $createdDepense): self
+    {
+        if (!$this->createdDepenses->contains($createdDepense)) {
+            $this->createdDepenses->add($createdDepense);
+            $createdDepense->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreatedDepense(Depenses $createdDepense): self
+    {
+        if ($this->createdDepenses->removeElement($createdDepense)) {
+            // set the owning side to null (unless already changed)
+            if ($createdDepense->getCreatedBy() === $this) {
+                $createdDepense->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Depenses>
+     */
+    public function getUpdatedDepenses(): Collection
+    {
+        return $this->updatedDepenses;
+    }
+
+    public function addUpdatedDepense(Depenses $updatedDepense): self
+    {
+        if (!$this->updatedDepenses->contains($updatedDepense)) {
+            $this->updatedDepenses->add($updatedDepense);
+            $updatedDepense->setUpdatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUpdatedDepense(Depenses $updatedDepense): self
+    {
+        if ($this->updatedDepenses->removeElement($updatedDepense)) {
+            // set the owning side to null (unless already changed)
+            if ($updatedDepense->getUpdatedBy() === $this) {
+                $updatedDepense->setUpdatedBy(null);
             }
         }
 

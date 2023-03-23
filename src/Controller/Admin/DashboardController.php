@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Controller\Admin\UserCrudController;
+use App\Entity\Commission;
+use App\Entity\Cotisation;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,8 +38,8 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+        yield MenuItem::linkToCrud('Commission','fa fa-money-bill', Cotisation::class);
         yield MenuItem::linkToCrud('Utilisateurs', 'fa fa-user', User::class);
-        // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
     public function configureActions(): Actions
     {

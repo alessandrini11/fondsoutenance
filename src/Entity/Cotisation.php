@@ -11,6 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
 class Cotisation
 {
     use DateTrait;
+    const DEPOT = 'depot';
+    const ATTRIBUTION_FOND = 'attribution fond';
+    const TYPES = [
+        self::DEPOT => 'depot',
+        self::ATTRIBUTION_FOND => 'attribution fond'
+    ]; 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

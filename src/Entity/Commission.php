@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class Commission
 {
-    use DateTrait;
+    use DateTrait;  
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -22,7 +22,7 @@ class Commission
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'createdCommission')]
@@ -37,10 +37,14 @@ class Commission
     #[ORM\OneToMany(mappedBy: 'commission', targetEntity: Cotisation::class)]
     private Collection $cotisations;
 
+    #[ORM\OneToMany(mappedBy: 'commission', targetEntity: Depenses::class)]
+    private Collection $depenses;
+
     public function __construct()
     {
         $this->membres = new ArrayCollection();
         $this->cotisations = new ArrayCollection();
+        $this->depenses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -150,6 +154,36 @@ class Commission
             // set the owning side to null (unless already changed)
             if ($cotisation->getCommission() === $this) {
                 $cotisation->setCommission(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Depenses>
+     */
+    public function getDepenses(): Collection
+    {
+        return $this->depenses;
+    }
+
+    public function addDepense(Depenses $depense): self
+    {
+        if (!$this->depenses->contains($depense)) {
+            $this->depenses->add($depense);
+            $depense->setCommission($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepense(Depenses $depense): self
+    {
+        if ($this->depenses->removeElement($depense)) {
+            // set the owning side to null (unless already changed)
+            if ($depense->getCommission() === $this) {
+                $depense->setCommission(null);
             }
         }
 
