@@ -12,18 +12,39 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
+use Symfony\UX\Chartjs\Model\Chart;
 
 class DashboardController extends AbstractDashboardController
 {
+    public function __construct(
+        readonly private ChartBuilderInterface $chartBuilder
+    )
+    {
+        
+    }
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        return $this->render('admin/index.html.twig');
+        $data = [
+            'labels' => ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            'datas' => [10, 15, 4, 3, 25, 41, 25],
+            'name' => 'line chart'
+        ];
+        $debitChart = $this->createChart(Chart::TYPE_LINE, $data);
+        $specialityChart = $this->createChart(Chart::TYPE_DOUGHNUT, $data);
+        $creditChart = $this->createChart(Chart::TYPE_LINE, $data);
+        return $this->render('admin/index.html.twig', [
+            'debitChart' => $debitChart,
+            'specialityChart' => $specialityChart,
+            'creditChart' => $creditChart
+        ]);
     
     }
 
@@ -49,5 +70,48 @@ class DashboardController extends AbstractDashboardController
     public function configureActions(): Actions
     {
         return parent::configureActions()->add(Crud::PAGE_INDEX, Action::DETAIL);
+    }
+    public function configureAssets(): Assets
+    {
+        return Assets::new()
+            ->addWebpackEncoreEntry('app')
+        ;
+    }
+    private function createChart(string $type, array $data): Chart
+    {
+        return $this->chartBuilder
+            ->createChart($type)
+            ->setData($this->setData($type, $data));
+    }
+
+    private function setData(string $type, array $data): array
+    {
+        $options = [
+            'labels' => $data['labels'],
+            'datasets' => [
+                [
+                    'label' => $data['name'],
+                    'borderColor' => 'rgb(109, 40, 217)',
+                    'data' => $data['datas']
+                ]
+            ],
+        ];
+        if($type === Chart::TYPE_DOUGHNUT){
+            $options['datasets'][0]['borderColor'] = '#fff';
+            $options['datasets'][0]['backgroundColor'] = $this->setColors($data['datas']);
+        }
+        return $options;
+    }
+    private function setColors(array $array): array
+    {
+        $colors = [];
+        foreach ($array as $item){
+            $colors[] = $this->rndRGBColorCode();
+        }
+        return $colors;
+    }
+    private function rndRGBColorCode(): string
+    {
+        return 'rgb(' . rand(0, 100) . ',' . rand(100, 255) . ',' . rand(150, 255) . ')';
     }
 }

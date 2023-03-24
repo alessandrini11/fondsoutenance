@@ -1,15 +1,29 @@
 {# templates/admin/my-custom-page.html.twig #}
 {% extends '@EasyAdmin/page/content.html.twig' %}
-{% block title 'Dashboard' %}
+{% block title 'Statistics' %}
 {% block content_title %}Dashboard{% endblock %}
-{% block page_actions %}
-    <a class="btn btn-primary" href="...">Some Action</a>
-{% endblock %}
 {% block main %}
-    <section>
-        <div class="w-11/12 mx-auto">
-            <h2 class="text-2xl font-medium">General Statistics</h2>
-            
+    <section class="mb-2">
+        <div class="grid md:grid-cols-3 gap-3">
+            {{ include('admin/components/card.html.twig', {name: 'Caisse', amount: 395, icon: 'fa fa-wallet'}) }}
+            {{ include('admin/components/card.html.twig', {name: 'Dépots', amount: 395, icon: 'fa fa-money-bill-1'}) }}
+            {{ include('admin/components/card.html.twig', {name: 'Argent commissions', amount: 395, icon: 'fa-money-bill-transfer'}) }}
+            {{ include('admin/components/card.html.twig', {name: 'Depenses', amount: 395, icon: 'fa-money-bill-transfer'}) }}
+            {{ include('admin/components/card.html.twig', {name: 'Commission', amount: 395, icon: 'fa-cogs', icon_color: 'violet'}) }}
+            {{ include('admin/components/card.html.twig', {name: 'Users', amount: 458, icon: 'fa fa-user'}) }}
+        </div>
+        <div class="my-2">
+            <div class="">
+                {{ render_chart(creditChart) }}
+            </div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-3 my-2">
+            <div class="col-span-1 md:col-span-2">
+                {{ render_chart(debitChart) }}
+            </div>
+            <div class="col-span-1">
+                {{ render_chart(specialityChart) }}
+            </div>
         </div>
     </section>
 {% endblock %}
