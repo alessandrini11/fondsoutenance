@@ -9,8 +9,8 @@
             {{ include('admin/components/card.html.twig', {name: 'Dépots', amount: userDepostiteObect.balance ~ ' fcfa', icon: 'fa fa-money-bill-1', percentage: userDepostiteObect.change, percentage_change: userDepostiteObect.amount}) }}
             {{ include('admin/components/card.html.twig', {name: 'Depenses', amount: 395 ~ ' fcfa', icon: 'fa-money-bill-transfer', percentage: 'neutral', percentage_change: 45}) }}
             {{ include('admin/components/card.html.twig', {name: 'Argent commissions', amount: commissionDepositeObject.balance ~' fcfa', icon: 'fa-money-bill-transfer', percentage: commissionDepositeObject.change, percentage_change: commissionDepositeObject.amount}) }}
-            {{ include('admin/components/card.html.twig', {name: 'Commission', amount: 395, icon: 'fa-cogs', icon_color: 'violet'}) }}
-            {{ include('admin/components/card.html.twig', {name: 'Users', amount: 458, icon: 'fa fa-user'}) }}
+            {{ include('admin/components/card.html.twig', {name: 'Commissions', amount: commissionCount, icon: 'fa-cogs', icon_color: 'violet'}) }}
+            {{ include('admin/components/card.html.twig', {name: 'Utilisateurs', amount: userCount, icon: 'fa fa-user'}) }}
         </div>
         <div class="my-2">
             <div class="">

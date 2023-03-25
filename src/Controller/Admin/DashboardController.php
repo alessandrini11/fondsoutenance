@@ -8,6 +8,8 @@ use App\Entity\Cotisation;
 use App\Entity\Depenses;
 use App\Entity\Membre;
 use App\Entity\User;
+use App\Repository\CommissionRepository;
+use App\Repository\UserRepository;
 use App\service\CotisationService;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +28,9 @@ class DashboardController extends AbstractDashboardController
 {
     public function __construct(
         readonly private ChartBuilderInterface $chartBuilder,
-        readonly private CotisationService $cotisationService
+        readonly private CotisationService $cotisationService,
+        readonly private UserRepository $userRepository,
+        readonly private CommissionRepository $commissionRepository
     )
     {
         
@@ -46,6 +50,8 @@ class DashboardController extends AbstractDashboardController
         $userDepostitObect = $this->cotisationService->getUserDepositeObject();
         $commissionDepositeObject = $this->cotisationService->getCommissionDepositeObject();
         $walletObject = $this->cotisationService->getBalanceObject();
+        $commissionCount = count($this->commissionRepository->findAll());
+        $usersCount = count($this->userRepository->findAll());
         return $this->render('admin/index.html.twig', [
             'debitChart' => $debitChart,
             'specialityChart' => $specialityChart,
@@ -53,7 +59,9 @@ class DashboardController extends AbstractDashboardController
             'cotisationEachMonthChart' => $cotisationEachMonthChart,
             'userDepostiteObect' => $userDepostitObect,
             'commissionDepositeObject' => $commissionDepositeObject,
-            'walletObject' => $walletObject
+            'walletObject' => $walletObject,
+            'userCount' => $usersCount,
+            'commissionCount' => $commissionCount
         ]);
     
     }

@@ -20,15 +20,15 @@ class CotisationService
         $deposits = $this->getDeposits(Cotisation::DEPOT);
         $commissions = $this->getDeposits(Cotisation::ATTRIBUTION_FOND);
         $balance = $deposits - $commissions;
-        $currentWeekUserDeposits = $this->getWalletPerWeek(Cotisation::DEPOT);
-        $lastWeekUserDeposits = $this->getWalletPerWeek(Cotisation::DEPOT, 1);
-        $currentWeekCommissionDeposits = $this->getWalletPerWeek(Cotisation::ATTRIBUTION_FOND);
-        $lastWeekCommissionDeposits = $this->getWalletPerWeek(Cotisation::ATTRIBUTION_FOND, 1);
+        $currentDayUserDeposits = $this->getWalletPerDay(Cotisation::DEPOT);
+        $lastDayUserDeposits = $this->getWalletPerDay(Cotisation::DEPOT, 1);
+        $currentDayCommissionDeposits = $this->getWalletPerDay(Cotisation::ATTRIBUTION_FOND);
+        $lastDayCommissionDeposits = $this->getWalletPerDay(Cotisation::ATTRIBUTION_FOND, 1);
         $percentage = $this->getPercentage(
-            $lastWeekCommissionDeposits + $lastWeekUserDeposits, 
-            $currentWeekCommissionDeposits + $currentWeekUserDeposits
+            $lastDayCommissionDeposits + $lastDayUserDeposits, 
+            $currentDayCommissionDeposits + $currentDayUserDeposits
         );
-        if($currentWeekCommissionDeposits + $currentWeekUserDeposits === 0){
+        if($currentDayCommissionDeposits + $currentDayUserDeposits === 0){
             return $this->createStdClass('decrease', 100, $balance);
         }
         return $this->createStdClass($this->getDirection($percentage), $percentage, $balance);
@@ -36,22 +36,22 @@ class CotisationService
 
     public function getCommissionDepositeObject(): stdClass
     {
-        $currentWeekDeposite = $this->getWalletPerWeek(Cotisation::ATTRIBUTION_FOND);
-        $lastWeekDeposite = $this->getWalletPerWeek(Cotisation::ATTRIBUTION_FOND, 1);
-        if($lastWeekDeposite === 0){
+        $currentDayDeposite = $this->getWalletPerDay(Cotisation::ATTRIBUTION_FOND);
+        $lastDayDeposite = $this->getWalletPerDay(Cotisation::ATTRIBUTION_FOND, 1);
+        if($lastDayDeposite === 0){
             return $this->createStdClass('increase', 100, $this->getDeposits(Cotisation::ATTRIBUTION_FOND));
         }
-        $percentage = $this->getPercentage($lastWeekDeposite, $currentWeekDeposite);
+        $percentage = $this->getPercentage($lastDayDeposite, $currentDayDeposite);
         return $this->createStdClass($this->getDirection($percentage), $percentage, $this->getDeposits(Cotisation::ATTRIBUTION_FOND));
     }
     public function getUserDepositeObject(): stdClass
     {
-        $currentWeekDeposite = $this->getWalletPerWeek(Cotisation::DEPOT);
-        $lastWeekDeposite = $this->getWalletPerWeek(Cotisation::DEPOT, 1);
-        if($lastWeekDeposite === 0){
+        $currentDayDeposite = $this->getWalletPerDay(Cotisation::DEPOT);
+        $lastDayDeposite = $this->getWalletPerDay(Cotisation::DEPOT, 1);
+        if($lastDayDeposite === 0){
             return $this->createStdClass('increase', 100, $this->getDeposits(Cotisation::DEPOT));
         }
-        $percentage = $this->getPercentage($lastWeekDeposite, $currentWeekDeposite);
+        $percentage = $this->getPercentage($lastDayDeposite, $currentDayDeposite);
         return $this->createStdClass($this->getDirection($percentage), $percentage, $this->getDeposits(Cotisation::DEPOT));
     }
     public function getCotisationEachMonth(): array
@@ -95,24 +95,24 @@ class CotisationService
         $object->balance = $balance;
         return $object;
     }
-    private function getWalletPerWeek(string $type, int $week = 0): int
+    private function getWalletPerDay(string $type, int $day = 0): int
     {
-        $targetWeek = (int)date('d') - $week;
+        $targetDay = (int)date('d') - $day;
         $cotisations = $this->cotisationRepository->findBy(['type' => $type]);
-        $currentWeekCotisationsArray = [];
+        $currentDayCotisationsArray = [];
         foreach ($cotisations as $cotisation) {
-            $cotisationWeek = $cotisation->getCreatedAt()->format('d');
-            if((int)$cotisationWeek  === $targetWeek){
-                $currentWeekCotisationsArray[$targetWeek][] = $cotisation->getAmount(); 
+            $cotisationDay = $cotisation->getCreatedAt()->format('d');
+            if((int)$cotisationDay  === $targetDay){
+                $currentDayCotisationsArray[$targetDay][] = $cotisation->getAmount(); 
             }
         }
-        $weekCotisation = 0;
-        foreach($currentWeekCotisationsArray as $key => $amounts){
+        $dayCotisation = 0;
+        foreach($currentDayCotisationsArray as $key => $amounts){
             foreach ($amounts as $value) {
-                $weekCotisation = $weekCotisation + $value;
+                $dayCotisation = $dayCotisation + $value;
             }
         }
-        return $weekCotisation;
+        return $dayCotisation;
     }
     private function getDirection(float $percentage): string
     {
@@ -125,9 +125,9 @@ class CotisationService
         }
         return $direction;
     }
-    private function getPercentage(int $lastWeekDeposite, int $currentWeekDeposite): float
+    private function getPercentage(int $lastDayDeposite, int $currentDayDeposite): float
     {
-        $percentage =  (($currentWeekDeposite -$lastWeekDeposite) / $lastWeekDeposite) * 100;
+        $percentage =  (($currentDayDeposite -$lastDayDeposite) / $lastDayDeposite) * 100;
         return round($percentage, 1);
     }
 }
