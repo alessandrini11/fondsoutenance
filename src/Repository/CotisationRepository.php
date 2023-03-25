@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Cotisation;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -37,6 +38,29 @@ class CotisationRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+    public function getCotisationEachMonth(): array
+    {
+        $currentYear = date('Y');
+        $currentMonth = date('m');
+        $currentDay = date('d');
+        $startDate = new DateTime("$currentYear-$currentMonth-01 00:00:00");
+        $endDate = new DateTime("$currentYear-$currentMonth-$currentDay 23:59:59");
+        return $this->getQueryBuilderSorted($startDate, $endDate, Cotisation::DEPOT);
+
+    }
+
+    private function getQueryBuilderSorted(DateTime $startDate, DateTime $endDate, string $type): array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.type = :type')
+            ->andWhere('c.createdAt BETWEEN :start AND :end')
+            ->setParameter('type', $type)
+            ->setParameter('start', $startDate)
+            ->setParameter('end', $endDate)
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
 //    /**

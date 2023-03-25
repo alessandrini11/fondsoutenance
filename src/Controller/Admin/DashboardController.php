@@ -8,6 +8,7 @@ use App\Entity\Cotisation;
 use App\Entity\Depenses;
 use App\Entity\Membre;
 use App\Entity\User;
+use App\service\CotisationService;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +25,8 @@ use Symfony\UX\Chartjs\Model\Chart;
 class DashboardController extends AbstractDashboardController
 {
     public function __construct(
-        readonly private ChartBuilderInterface $chartBuilder
+        readonly private ChartBuilderInterface $chartBuilder,
+        readonly private CotisationService $cotisationService
     )
     {
         
@@ -40,10 +42,15 @@ class DashboardController extends AbstractDashboardController
         $debitChart = $this->createChart(Chart::TYPE_LINE, $data);
         $specialityChart = $this->createChart(Chart::TYPE_DOUGHNUT, $data);
         $creditChart = $this->createChart(Chart::TYPE_LINE, $data);
+        $cotisationEachMonthChart = $this->createChart(Chart::TYPE_LINE, $this->cotisationService->getWalletEachMonth());
+        $creditObject = $this->cotisationService->getDepositeObject();
+        // $debitOject = $this->;
         return $this->render('admin/index.html.twig', [
             'debitChart' => $debitChart,
             'specialityChart' => $specialityChart,
-            'creditChart' => $creditChart
+            'creditChart' => $creditChart,
+            'cotisationEachMonthChart' => $cotisationEachMonthChart,
+            'creditObject' => $creditObject
         ]);
     
     }
@@ -51,7 +58,7 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Symfony Skeleton Web App')
+            ->setTitle('Soutenance ENSPD')
             ->setLocales([
                 'en' => '🇬🇧 English',
                 'pl' => '🇵🇱 Polski'

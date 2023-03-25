@@ -40,6 +40,9 @@ class Commission
     #[ORM\OneToMany(mappedBy: 'commission', targetEntity: Depenses::class)]
     private Collection $depenses;
 
+    #[ORM\Column]
+    private ?int $budget = null;
+
     public function __construct()
     {
         $this->membres = new ArrayCollection();
@@ -192,5 +195,17 @@ class Commission
     public function __toString()
     {
         return $this->name;
+    }
+
+    public function getBudget(): ?int
+    {
+        return $this->budget;
+    }
+
+    public function setBudget(int $budget): self
+    {
+        $this->budget = $budget;
+
+        return $this;
     }
 }

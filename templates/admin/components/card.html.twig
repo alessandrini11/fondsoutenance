@@ -6,8 +6,15 @@
         </div>
         <div class="flex justify-between items-end flex-col">
             <div class="">
-                <p class="text-green-500"><i class="fa fa-arrow-up transform rotate-45"></i> <span class="">+16.5%</span> </p>
-                <p class="text-red-500"><i class="fa fa-arrow-down transform rotate-45"></i> <span class="">-8.5%</span> </p>
+                {% if percentage is defined %}
+                    {% if percentage == 'increase'%}
+                        <p class="text-green-500"><i class="fa fa-arrow-up transform rotate-45"></i> <span class="">+{{percentage_change}}%</span> </p>
+                        {% elseif percentage == 'neutral' %}
+                        <p class="text-blue-500"><i class="fa fa-arrow-down transform rotate-90"></i> <span class="">0%</span> </p>
+                        {% else %}
+                        <p class="text-red-500"><i class="fa fa-arrow-down transform rotate-45"></i> <span class="">-{{percentage_change}}%</span> </p>
+                    {% endif %}
+                {% endif %}
             </div>
             <span class="h-12 w-12 flex justify-center items-center rounded bg-violet-200 text-violet-700">
                 <i class="fa {{icon}}"></i>
