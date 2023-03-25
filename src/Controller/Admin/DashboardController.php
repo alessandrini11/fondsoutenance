@@ -42,15 +42,18 @@ class DashboardController extends AbstractDashboardController
         $debitChart = $this->createChart(Chart::TYPE_LINE, $data);
         $specialityChart = $this->createChart(Chart::TYPE_DOUGHNUT, $data);
         $creditChart = $this->createChart(Chart::TYPE_LINE, $data);
-        $cotisationEachMonthChart = $this->createChart(Chart::TYPE_LINE, $this->cotisationService->getWalletEachMonth());
-        $creditObject = $this->cotisationService->getDepositeObject();
-        // $debitOject = $this->;
+        $cotisationEachMonthChart = $this->createChart(Chart::TYPE_LINE, $this->cotisationService->getCotisationEachMonth());
+        $userDepostitObect = $this->cotisationService->getUserDepositeObject();
+        $commissionDepositeObject = $this->cotisationService->getCommissionDepositeObject();
+        $walletObject = $this->cotisationService->getBalanceObject();
         return $this->render('admin/index.html.twig', [
             'debitChart' => $debitChart,
             'specialityChart' => $specialityChart,
             'creditChart' => $creditChart,
             'cotisationEachMonthChart' => $cotisationEachMonthChart,
-            'creditObject' => $creditObject
+            'userDepostiteObect' => $userDepostitObect,
+            'commissionDepositeObject' => $commissionDepositeObject,
+            'walletObject' => $walletObject
         ]);
     
     }
@@ -76,7 +79,9 @@ class DashboardController extends AbstractDashboardController
     }
     public function configureActions(): Actions
     {
-        return parent::configureActions()->add(Crud::PAGE_INDEX, Action::DETAIL);
+        return parent::configureActions()
+            ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ;
     }
     public function configureAssets(): Assets
     {

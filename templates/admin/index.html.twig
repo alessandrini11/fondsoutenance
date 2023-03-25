@@ -5,10 +5,10 @@
 {% block main %}
     <section class="mb-2">
         <div class="grid md:grid-cols-3 gap-3">
-            {{ include('admin/components/card.html.twig', {name: 'Caisse', amount: 395, icon: 'fa fa-wallet', percentage: 'increase', percentage_change: 95}) }}
-            {{ include('admin/components/card.html.twig', {name: 'Dépots', amount: creditObject.balance, icon: 'fa fa-money-bill-1', percentage: creditObject.change, percentage_change: creditObject.amount}) }}
-            {{ include('admin/components/card.html.twig', {name: 'Depenses', amount: 395, icon: 'fa-money-bill-transfer', percentage: 'decrease', percentage_change: 45}) }}
-            {{ include('admin/components/card.html.twig', {name: 'Argent commissions', amount: 395, icon: 'fa-money-bill-transfer'}) }}
+            {{ include('admin/components/card.html.twig', {name: 'Caisse', amount: walletObject.balance ~ ' fcfa', icon : 'fa fa-wallet', percentage: walletObject.change, percentage_change: walletObject.amount}) }}
+            {{ include('admin/components/card.html.twig', {name: 'Dépots', amount: userDepostiteObect.balance ~ ' fcfa', icon: 'fa fa-money-bill-1', percentage: userDepostiteObect.change, percentage_change: userDepostiteObect.amount}) }}
+            {{ include('admin/components/card.html.twig', {name: 'Depenses', amount: 395 ~ ' fcfa', icon: 'fa-money-bill-transfer', percentage: 'neutral', percentage_change: 45}) }}
+            {{ include('admin/components/card.html.twig', {name: 'Argent commissions', amount: commissionDepositeObject.balance ~' fcfa', icon: 'fa-money-bill-transfer', percentage: commissionDepositeObject.change, percentage_change: commissionDepositeObject.amount}) }}
             {{ include('admin/components/card.html.twig', {name: 'Commission', amount: 395, icon: 'fa-cogs', icon_color: 'violet'}) }}
             {{ include('admin/components/card.html.twig', {name: 'Users', amount: 458, icon: 'fa fa-user'}) }}
         </div>

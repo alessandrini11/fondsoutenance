@@ -4,6 +4,9 @@ namespace App\Controller\Admin;
 
 use App\Entity\Depenses;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -18,7 +21,12 @@ class DepensesCrudController extends AbstractCrudController
         return Depenses::class;
     }
 
-    
+    // public function configureActions(Actions $actions): Actions
+    // {
+    //     return parent::configureActions($actions)
+    //         ->remove(Crud::PAGE_INDEX, Action::DELETE)
+    //         ;
+    // }
     public function configureFields(string $pageName): iterable
     {
         return [
