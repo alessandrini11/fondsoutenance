@@ -11,6 +11,7 @@ use App\Entity\User;
 use App\Repository\CommissionRepository;
 use App\Repository\UserRepository;
 use App\service\CotisationService;
+use App\service\DepenseService;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,6 +30,7 @@ class DashboardController extends AbstractDashboardController
     public function __construct(
         readonly private ChartBuilderInterface $chartBuilder,
         readonly private CotisationService $cotisationService,
+        readonly private DepenseService $depenseService,
         readonly private UserRepository $userRepository,
         readonly private CommissionRepository $commissionRepository
     )
@@ -43,21 +45,23 @@ class DashboardController extends AbstractDashboardController
             'datas' => [10, 15, 4, 3, 25, 41, 25],
             'name' => 'line chart'
         ];
-        $debitChart = $this->createChart(Chart::TYPE_LINE, $data);
         $specialityChart = $this->createChart(Chart::TYPE_DOUGHNUT, $data);
         $creditChart = $this->createChart(Chart::TYPE_LINE, $data);
+        $depenseChart = $this->createChart(Chart::TYPE_LINE, $this->depenseService->getDepenseEachDay());
         $cotisationEachMonthChart = $this->createChart(Chart::TYPE_LINE, $this->cotisationService->getCotisationEachMonth());
         $userDepostitObect = $this->cotisationService->getUserDepositeObject();
         $commissionDepositeObject = $this->cotisationService->getCommissionDepositeObject();
         $walletObject = $this->cotisationService->getBalanceObject();
+        $depenseObject = $this->depenseService->getDepenseObject();
         $commissionCount = count($this->commissionRepository->findAll());
         $usersCount = count($this->userRepository->findAll());
         return $this->render('admin/index.html.twig', [
-            'debitChart' => $debitChart,
+            'depenseChart' => $depenseChart,
             'specialityChart' => $specialityChart,
             'creditChart' => $creditChart,
             'cotisationEachMonthChart' => $cotisationEachMonthChart,
             'userDepostiteObect' => $userDepostitObect,
+            'depenseObject' => $depenseObject,
             'commissionDepositeObject' => $commissionDepositeObject,
             'walletObject' => $walletObject,
             'userCount' => $usersCount,

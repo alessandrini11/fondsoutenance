@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Depenses;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -37,6 +38,26 @@ class DepensesRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+    public function getDepensesEachDay(): array
+    {
+        $currentYear = date('Y');
+        $currentMonth = date('m');
+        $currentDay = date('d');
+        $startDate = new DateTime("$currentYear-$currentMonth-01 00:00:00");
+        $endDate = new DateTime("$currentYear-$currentMonth-$currentDay 23:59:59");
+        return $this->getQueryBuilderSorted($startDate, $endDate);
+
+    }
+    private function getQueryBuilderSorted(DateTime $startDate, DateTime $endDate): array
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.createdAt BETWEEN :start AND :end')
+            ->setParameter('start', $startDate)
+            ->setParameter('end', $endDate)
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
 //    /**
