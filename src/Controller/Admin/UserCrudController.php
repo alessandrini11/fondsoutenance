@@ -4,6 +4,9 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -27,6 +30,15 @@ class UserCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return User::class;
+    }
+    public function configureActions(Actions $actions): Actions
+    {
+        return parent::configureActions($actions)
+            ->remove(Crud::PAGE_INDEX, Action::DETAIL)
+            ->setPermission(Action::DELETE, 'ROLE_ADMIN')
+            ->setPermission(Crud::PAGE_NEW, 'ROLE_ADMIN')
+            ->setPermission(Crud::PAGE_EDIT, 'ROLE_ADMIN')
+            ;
     }
 
     public function configureFields(string $pageName): iterable
