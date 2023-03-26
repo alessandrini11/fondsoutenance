@@ -34,7 +34,6 @@ class UserCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         return parent::configureActions($actions)
-            ->remove(Crud::PAGE_INDEX, Action::DETAIL)
             ->setPermission(Action::DELETE, 'ROLE_ADMIN')
             ->setPermission(Crud::PAGE_NEW, 'ROLE_ADMIN')
             ->setPermission(Crud::PAGE_EDIT, 'ROLE_ADMIN')
