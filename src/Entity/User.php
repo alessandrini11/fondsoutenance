@@ -20,12 +20,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     const ROLE_USER = 'ROLE_USER';
     const ROLE_ADMIN = 'ROLE_ADMIN';
-    // const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
+    const ROLE_COMMISSION_HEAD = 'ROLE_COMMISSION_HEAD';
+    const ROLE_TREASURER = 'ROLE_TREASURER';
 
     const ROLES = [
-        self::ROLE_ADMIN => "Admin",
         self::ROLE_USER => "User",
-        // self::ROLE_SUPER_ADMIN => "Super admin"
+        self::ROLE_COMMISSION_HEAD => "Chef commission",
+        self::ROLE_TREASURER => "Tresorier",
+        self::ROLE_ADMIN => "Admin",
     ];
 
     const MAN = 'man';
@@ -58,13 +60,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     const SECRETAIRE_GENERALE = 'sg';
     const TRESORIER = 'tresorier';
     const COMMISSAIRE_COMPTES = 'comm au comptes';
-    const AUCUN = 'aucun';
+    const CHEF_COMMISSION = 'chef commission';
     const POSTES = [
         self::PRESIDENT => 'président',
         self::VICE_PRESIDENT => 'vice président',
         self::SECRETAIRE_GENERALE => 'sg',
         self::TRESORIER => 'trésorier',
-        self::AUCUN => 'aucun'
+        self::COMMISSAIRE_COMPTES => 'comm aux comptes',
+        self::CHEF_COMMISSION => 'chef commission'
     ];
     #[ORM\Id]
     #[ORM\GeneratedValue]

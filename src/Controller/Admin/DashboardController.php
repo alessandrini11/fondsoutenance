@@ -12,6 +12,7 @@ use App\Repository\CommissionRepository;
 use App\Repository\UserRepository;
 use App\service\CotisationService;
 use App\service\DepenseService;
+use App\service\UserService;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,6 +23,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
@@ -31,6 +33,7 @@ class DashboardController extends AbstractDashboardController
         readonly private ChartBuilderInterface $chartBuilder,
         readonly private CotisationService $cotisationService,
         readonly private DepenseService $depenseService,
+        readonly private UserService $userService,
         readonly private UserRepository $userRepository,
         readonly private CommissionRepository $commissionRepository
     )
@@ -45,7 +48,7 @@ class DashboardController extends AbstractDashboardController
             'datas' => [10, 15, 4, 3, 25, 41, 25],
             'name' => 'line chart'
         ];
-        $specialityChart = $this->createChart(Chart::TYPE_DOUGHNUT, $data);
+        $specialityChart = $this->createChart(Chart::TYPE_DOUGHNUT, $this->userService->getUserPerFiliere());
         $creditChart = $this->createChart(Chart::TYPE_LINE, $data);
         $depenseChart = $this->createChart(Chart::TYPE_LINE, $this->depenseService->getDepenseEachDay());
         $cotisationEachMonthChart = $this->createChart(Chart::TYPE_LINE, $this->cotisationService->getCotisationEachMonth());
@@ -83,10 +86,10 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
-        yield MenuItem::linkToCrud('Cotisation','fa fa-money-bill', Cotisation::class);
         yield MenuItem::linkToCrud('Depenses', 'fa fa-money-bill-1', Depenses::class);
-        yield MenuItem::linkToCrud('Commission', 'fa fa-house', Commission::class);
         yield MenuItem::linkToCrud('Membre de commision', 'fa fa-users', Membre::class);
+        yield MenuItem::linkToCrud('Cotisation','fa fa-money-bill', Cotisation::class);
+        yield MenuItem::linkToCrud('Commission', 'fa fa-house', Commission::class);
         yield MenuItem::linkToCrud('Utilisateurs', 'fa fa-user', User::class);
     }
     public function configureActions(): Actions
@@ -136,6 +139,6 @@ class DashboardController extends AbstractDashboardController
     }
     private function rndRGBColorCode(): string
     {
-        return 'rgb(' . rand(0, 100) . ',' . rand(100, 255) . ',' . rand(150, 255) . ')';
+        return 'rgb(' . rand(0, 255) . ',' . rand(50, 255) . ',' . rand(150, 255) . ')';
     }
 }

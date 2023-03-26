@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Cotisation;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -22,12 +23,17 @@ class CotisationCrudController extends AbstractCrudController
         return Cotisation::class;
     }
 
-    // public function configureActions(Actions $actions): Actions
-    // {
-    //     return parent::configureActions($actions)
-    //         ->remove(Crud::PAGE_INDEX, Action::DELETE)
-    //         ;
-    // }
+    public function configureActions(Actions $actions): Actions
+    {
+        return parent::configureActions($actions)
+            ->remove(Crud::PAGE_INDEX, Action::DELETE)
+            ->setPermissions([
+                Crud::PAGE_NEW => User::ROLE_TREASURER,
+                Crud::PAGE_EDIT => User::ROLE_TREASURER,
+                Action::NEW => User::ROLE_TREASURER
+            ])
+            ;
+    }
     public function configureFields(string $pageName): iterable
     {
         return [
