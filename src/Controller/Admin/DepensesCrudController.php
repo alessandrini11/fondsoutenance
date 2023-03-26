@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Depenses;
 use App\Entity\Membre;
+use App\Entity\User;
 use App\Repository\CommissionRepository;
 use App\Repository\MembreRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,6 +36,11 @@ class DepensesCrudController extends AbstractCrudController
     {
         return parent::configureActions($actions)
             ->remove(Crud::PAGE_INDEX, Action::DELETE)
+            ->setPermissions([
+                Crud::PAGE_NEW => User::ROLE_COMMISSION_HEAD,
+                Crud::PAGE_EDIT => User::ROLE_COMMISSION_HEAD,
+                Action::NEW => User::ROLE_COMMISSION_HEAD
+            ])
             ;
     }
     public function configureFields(string $pageName): iterable
