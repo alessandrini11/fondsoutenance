@@ -35,7 +35,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         self::MAN => 'homme',
         self::WOMAN => 'femme',
     ];
+
+    const GI_EXFGI = 'gi exFGi';
+    const GRT_EXFGI = 'grt exFGi';
+    const GLO_ENSPD = 'glo enspd';
+    const GRT_ENSPD = 'grt enspd';
+    const GLO_MPRO = 'glo mpro';
+    const GRT_MPRO = 'grt mpro';
+
+    const FILIERES = [
+        self::GI_EXFGI => 'GI exFGi',
+        self::GRT_EXFGI => 'GRT exFGi',
+        self::GLO_ENSPD => 'GLO enspd',
+        self::GRT_ENSPD => 'GRT enspd',
+        self::GLO_MPRO => 'GLO mpro',
+        self::GRT_MPRO => 'GRT mpro',
+        self::GRT_MPRO => 'GRT mpro',
+    ];
     
+    const PRESIDENT = 'president';
+    const VICE_PRESIDENT = 'vice president';
+    const SECRETAIRE_GENERALE = 'sg';
+    const TRESORIER = 'tresorier';
+    const COMMISSAIRE_COMPTES = 'comm au comptes';
+    const AUCUN = 'aucun';
+    const POSTES = [
+        self::PRESIDENT => 'président',
+        self::VICE_PRESIDENT => 'vice président',
+        self::SECRETAIRE_GENERALE => 'sg',
+        self::TRESORIER => 'trésorier',
+        self::AUCUN => 'aucun'
+    ];
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

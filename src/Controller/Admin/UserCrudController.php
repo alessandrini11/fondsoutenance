@@ -36,13 +36,15 @@ class UserCrudController extends AbstractCrudController
             FormField::addPanel('User Details'),
             TextField::new('firstname'),
             TextField::new('lastname'),
-            TextField::new('poste'),
+            ChoiceField::new('poste')
+                ->setChoices(array_flip(User::POSTES)),
             ChoiceField::new('sex')->setChoices(array_flip(User::sexs))->hideOnIndex(),
             FormField::addPanel('Account Details'),
             EmailField::new('email'),
             TextField::new('telephone'),
-            TextField::new('filiere'),
-            AssociationField::new('cotisations'),
+            ChoiceField::new('filiere')
+                ->setChoices(array_flip(User::FILIERES)),
+            AssociationField::new('cotisations')->hideOnForm(),
             // AssociationField::new('buildings')->hideOnForm(),
             TextField::new('plainPassword')->setRequired(false)->hideOnIndex(),
             ChoiceField::new('roles')->allowMultipleChoices()->setChoices(array_flip(User::ROLES)),
