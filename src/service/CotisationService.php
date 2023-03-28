@@ -24,35 +24,57 @@ class CotisationService
         $lastDayUserDeposits = $this->getWalletPerDay(Cotisation::DEPOT, 1);
         $currentDayCommissionDeposits = $this->getWalletPerDay(Cotisation::ATTRIBUTION_FOND);
         $lastDayCommissionDeposits = $this->getWalletPerDay(Cotisation::ATTRIBUTION_FOND, 1);
-        $percentage = $this->getPercentage(
-            $lastDayCommissionDeposits + $lastDayUserDeposits, 
-            $currentDayCommissionDeposits + $currentDayUserDeposits
-        );
-        if($currentDayCommissionDeposits + $currentDayUserDeposits === 0){
-            return $this->createStdClass('decrease', 100, $balance);
+        /**
+         * first case : if the deposits made by users added to the deposits made to the different
+         * commissions are equal to 0, 
+         * second case: if the sum of the deposits made by user and deposits made to commission
+         * the last day and the sum of the deposit made by user and deposits made to commission
+         * the current day are equal to 0 
+         */
+        if(
+            $lastDayUserDeposits + $lastDayCommissionDeposits === 0 &&
+            $currentDayUserDeposits + $currentDayCommissionDeposits > 0
+        ){
+            return $this->createStdClass('increase', 100, $balance);
+        }elseif (
+            $lastDayUserDeposits + $lastDayCommissionDeposits === 0 &&
+            $currentDayUserDeposits + $currentDayCommissionDeposits === 0
+        ){
+            return $this->createStdClass('neutral', 0, $balance);
+        } else{
+            $percentage = $this->getPercentage(
+                $lastDayUserDeposits + $currentDayUserDeposits, 
+                $lastDayCommissionDeposits + $currentDayCommissionDeposits
+            );
+            return $this->createStdClass($this->getDirection($percentage), $percentage, $balance);
         }
-        return $this->createStdClass($this->getDirection($percentage), $percentage, $balance);
     }
 
     public function getCommissionDepositeObject(): stdClass
     {
         $currentDayDeposite = $this->getWalletPerDay(Cotisation::ATTRIBUTION_FOND);
         $lastDayDeposite = $this->getWalletPerDay(Cotisation::ATTRIBUTION_FOND, 1);
-        if($lastDayDeposite === 0){
-            return $this->createStdClass('increase', 100, $this->getDeposits(Cotisation::ATTRIBUTION_FOND));
+        if($lastDayDeposite === 0 && $currentDayDeposite === 0){
+            return $this->createStdClass('neutral', 0, $this->getDeposits(Cotisation::ATTRIBUTION_FOND));
+        } elseif($lastDayDeposite === 0 && $currentDayDeposite > 0) {
+            return $this->createStdClass('increase', 0, $this->getDeposits(Cotisation::ATTRIBUTION_FOND));
+        } else{
+            $percentage = $this->getPercentage($lastDayDeposite, $currentDayDeposite);
+            return $this->createStdClass($this->getDirection($percentage), $percentage, $this->getDeposits(Cotisation::ATTRIBUTION_FOND));
         }
-        $percentage = $this->getPercentage($lastDayDeposite, $currentDayDeposite);
-        return $this->createStdClass($this->getDirection($percentage), $percentage, $this->getDeposits(Cotisation::ATTRIBUTION_FOND));
     }
     public function getUserDepositeObject(): stdClass
     {
         $currentDayDeposite = $this->getWalletPerDay(Cotisation::DEPOT);
         $lastDayDeposite = $this->getWalletPerDay(Cotisation::DEPOT, 1);
-        if($lastDayDeposite === 0){
+        if($lastDayDeposite === 0 && $currentDayDeposite == 0){
+            return $this->createStdClass('neutral', 100, $this->getDeposits(Cotisation::DEPOT));
+        } elseif ($lastDayDeposite === 0 && $currentDayDeposite > 0){
             return $this->createStdClass('increase', 100, $this->getDeposits(Cotisation::DEPOT));
-        }
-        $percentage = $this->getPercentage($lastDayDeposite, $currentDayDeposite);
+        } else {
+            $percentage = $this->getPercentage($lastDayDeposite, $currentDayDeposite);
         return $this->createStdClass($this->getDirection($percentage), $percentage, $this->getDeposits(Cotisation::DEPOT));
+        }
     }
     public function getCotisationEachMonth(): array
     {

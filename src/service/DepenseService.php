@@ -17,12 +17,14 @@ class DepenseService
     {
         $depenseCurrentDay = $this->getDepensePerDay();
         $depenseLastDay = $this->getDepensePerDay(1);
-        if($depenseLastDay === 0){
+        if($depenseLastDay === 0 && $depenseCurrentDay === 0 ){
+            return $this->createStdClass('neutral', 100, $this->getDepense());
+        } elseif ($depenseLastDay === 0 && $depenseCurrentDay > 0){
             return $this->createStdClass('increase', 100, $this->getDepense());
+        } else {
+            $percentage = $this->getPercentage($depenseLastDay, $depenseCurrentDay);
+            return $this->createStdClass($this->getDirection($percentage), $percentage, $this->getDepense());
         }
-        $percentage = $this->getPercentage($depenseLastDay, $depenseCurrentDay);
-        return $this->createStdClass($this->getDirection($percentage), $percentage, $this->getDepense());
-        
     }
     public function getDepenseEachDay(): array
     {

@@ -35,7 +35,7 @@ class DepensesCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         return parent::configureActions($actions)
-            ->remove(Crud::PAGE_INDEX, Action::DELETE)
+            // ->remove(Crud::PAGE_INDEX, Action::DELETE)
             ->setPermissions([
                 Crud::PAGE_NEW => User::ROLE_COMMISSION_HEAD,
                 Crud::PAGE_EDIT => User::ROLE_COMMISSION_HEAD,
