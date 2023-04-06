@@ -5,9 +5,9 @@
 {% block main %}
     <section class="mb-2">
         <div class="grid md:grid-cols-3 gap-3">
-            {{ include('admin/components/card.html.twig', {name: 'Caisse', amount: walletObject.balance ~ ' fcfa', icon : 'fa fa-wallet', percentage: walletObject.change, percentage_change: walletObject.amount}) }}
-            {{ include('admin/components/card.html.twig', {name: 'Dépots', amount: userDepostiteObect.balance ~ ' fcfa', icon: 'fa fa-money-bill-1', percentage: userDepostiteObect.change, percentage_change: userDepostiteObect.amount}) }}
-            {{ include('admin/components/card.html.twig', {name: 'Depenses', amount: depenseObject.balance ~ ' fcfa', icon: 'fa-money-bill-transfer', percentage: depenseObject.change, percentage_change: depenseObject.amount}) }}
+            {{ include('admin/components/card.html.twig', {name: 'Caisse', amount: walletObject.balance | number_format(0, '.', ',') ~ ' fcfa', icon : 'fa fa-wallet', percentage: walletObject.change, percentage_change: walletObject.amount}) }}
+            {{ include('admin/components/card.html.twig', {name: 'Dépots', amount: userDepostiteObect.balance | number_format(0, '.', ',') ~ ' fcfa', icon: 'fa fa-money-bill-1', percentage: userDepostiteObect.change, percentage_change: userDepostiteObect.amount}) }}
+            {{ include('admin/components/card.html.twig', {name: 'Depenses', amount: depenseObject.balance | number_format(0, '.', ',') ~ ' fcfa', icon: 'fa-money-bill-transfer', percentage: depenseObject.change, percentage_change: depenseObject.amount}) }}
             {{ include('admin/components/card.html.twig', {name: 'Argent commissions', amount: commissionDepositeObject.balance ~' fcfa', icon: 'fa-money-bill-transfer', percentage: commissionDepositeObject.change, percentage_change: commissionDepositeObject.amount}) }}
             {{ include('admin/components/card.html.twig', {name: 'Commissions', amount: commissionCount, icon: 'fa-cogs', icon_color: 'violet'}) }}
             {{ include('admin/components/card.html.twig', {name: 'Utilisateurs', amount: userCount, icon: 'fa fa-user'}) }}

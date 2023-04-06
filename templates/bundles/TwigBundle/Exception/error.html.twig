@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Bad Request {% endblock %}
+
+{% block body %}
+    <main class="">
+        <section class="">
+            <div class="container">
+                <div class="h-screen flex justify-center items-center">
+                    <div class="text-center space-y-3">
+                        <h1 class="text-[150px] font-semibold tracking-tighter text-primary">Oops!</h1>
+                        <h2 class="text-2xl font-semibold">400 - Il y a pas assez d'argent dans les caisses</h2>
+                        <p class="">Vous en pouvez pas attribuer de l'argent a une commission, il n'y a pas assez de fond dans les caisse</p>
+                        <p><a href="{{path('admin')}}" class="font-semibols">Retournez à l'accueil</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

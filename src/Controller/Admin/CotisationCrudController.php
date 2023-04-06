@@ -2,8 +2,12 @@
 
 namespace App\Controller\Admin;
 
+use App\DTO\SmsResponse;
 use App\Entity\Cotisation;
 use App\Entity\User;
+use App\exception\BadRequestException;
+use App\service\CotisationService;
+use App\service\SmsService;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -18,6 +22,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class CotisationCrudController extends AbstractCrudController
 {
+    public function __construct(
+        readonly private CotisationService $cotisationService,
+        readonly private SmsService $smsService
+    )
+    {
+        
+    }
     public static function getEntityFqcn(): string
     {
         return Cotisation::class;
@@ -57,9 +68,15 @@ class CotisationCrudController extends AbstractCrudController
         $entityInstance->setCreatedBy($this->getUser());
         if($entityInstance->getType() === Cotisation::DEPOT){
             $entityInstance->setCommission(null);
+            $smsResponse = new SmsResponse($entityInstance->getOriginator(), $entityInstance->getAmount());
+            // $this->smsService->sendSms($smsResponse);
+
         }
         if($entityInstance->getType() === Cotisation::ATTRIBUTION_FOND){
             $entityInstance->setOriginator(null);
+            if($this->cotisationService->getBalanceObject()->balance < $entityInstance->getAmount()){
+                throw new BadRequestException("Il y a pas assez d'argent dans les caisses", 400);
+            }
         }
         parent::persistEntity($entityManager, $entityInstance);
     }
@@ -72,6 +89,9 @@ class CotisationCrudController extends AbstractCrudController
         }
         if($entityInstance->getType() === Cotisation::ATTRIBUTION_FOND){
             $entityInstance->setOriginator(null);
+            if($this->cotisationService->getBalanceObject()->balance < $entityInstance->getAmount()){
+                throw new BadRequestException("Il y a pas assez d'argent dans les caisses", 400);
+            }
         }
         parent::persistEntity($entityManager, $entityInstance);
     }

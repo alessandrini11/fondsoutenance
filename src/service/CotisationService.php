@@ -57,7 +57,7 @@ class CotisationService
         if($lastDayDeposite === 0 && $currentDayDeposite === 0){
             return $this->createStdClass('neutral', 0, $this->getDeposits(Cotisation::ATTRIBUTION_FOND));
         } elseif($lastDayDeposite === 0 && $currentDayDeposite > 0) {
-            return $this->createStdClass('increase', 0, $this->getDeposits(Cotisation::ATTRIBUTION_FOND));
+            return $this->createStdClass('increase', 100, $this->getDeposits(Cotisation::ATTRIBUTION_FOND));
         } else{
             $percentage = $this->getPercentage($lastDayDeposite, $currentDayDeposite);
             return $this->createStdClass($this->getDirection($percentage), $percentage, $this->getDeposits(Cotisation::ATTRIBUTION_FOND));
