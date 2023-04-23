@@ -69,7 +69,7 @@ class CotisationCrudController extends AbstractCrudController
         if($entityInstance->getType() === Cotisation::DEPOT){
             $entityInstance->setCommission(null);
             $smsResponse = new SmsResponse($entityInstance->getOriginator(), $entityInstance->getAmount());
-            // $this->smsService->sendSms($smsResponse);
+            // $this->smsService->sendSms($smsResponse);c
 
         }
         if($entityInstance->getType() === Cotisation::ATTRIBUTION_FOND){
