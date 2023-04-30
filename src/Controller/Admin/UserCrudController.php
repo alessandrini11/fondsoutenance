@@ -44,6 +44,9 @@ class UserCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
+            AssociationField::new('cotisations')
+                ->setTemplatePath('admin/contisations.html.twig')
+                ->onlyOnDetail(),
             FormField::addPanel('User Details'),
             TextField::new('firstname'),
             TextField::new('lastname'),
@@ -51,16 +54,18 @@ class UserCrudController extends AbstractCrudController
                 ->setChoices(array_flip(User::POSTES)),
             ChoiceField::new('sex')->setChoices(array_flip(User::sexs))->hideOnIndex(),
             FormField::addPanel('Account Details'),
-            EmailField::new('email'),
+            EmailField::new('email')
+                ->setPermission('ROLE_ADMIN'),
             TextField::new('telephone'),
             ChoiceField::new('filiere')
                 ->setChoices(array_flip(User::FILIERES)),
-            AssociationField::new('cotisations')->hideOnForm(),
-            // AssociationField::new('buildings')->hideOnForm(),
             TextField::new('plainPassword')->setRequired(false)->hideOnIndex(),
-            ChoiceField::new('roles')->allowMultipleChoices()->setChoices(array_flip(User::ROLES)),
-            // BooleanField::new('isActive'),
-            BooleanField::new('isVerified'),
+            ChoiceField::new('roles')
+
+                ->allowMultipleChoices()
+                ->setChoices(array_flip(User::ROLES)),
+            BooleanField::new('isVerified')
+                ->setPermission('ROLE_ADMIN'),
             DateTimeField::new('createdAt')->hideOnForm(),
             DateTimeField::new('updatedAt')->hideOnForm()
         ];

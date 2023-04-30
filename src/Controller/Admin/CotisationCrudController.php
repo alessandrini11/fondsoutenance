@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -54,9 +55,14 @@ class CotisationCrudController extends AbstractCrudController
             NumberField::new('amount'),
             TextField::new('reason'),
             AssociationField::new('originator'),
+            FormField::addPanel('Attribution de fonds'),
             AssociationField::new('commission'),
-            AssociationField::new('createdBy')->hideOnForm(),
-            AssociationField::new('updatedBy')->hideOnForm(),
+            AssociationField::new('createdBy')
+                ->hideOnForm()
+                ->setPermission('ROLE_TREASURER'),
+            AssociationField::new('updatedBy')
+                ->hideOnForm()
+                ->setPermission('ROLE_TREASURER'),
             DateTimeField::new('createdAt')->hideOnForm(),
             DateTimeField::new('updatedAt')->hideOnForm(),
         ];
@@ -69,7 +75,7 @@ class CotisationCrudController extends AbstractCrudController
         if($entityInstance->getType() === Cotisation::DEPOT){
             $entityInstance->setCommission(null);
             $smsResponse = new SmsResponse($entityInstance->getOriginator(), $entityInstance->getAmount());
-            // $this->smsService->sendSms($smsResponse);c
+            $this->smsService->sendSms($smsResponse);
 
         }
         if($entityInstance->getType() === Cotisation::ATTRIBUTION_FOND){

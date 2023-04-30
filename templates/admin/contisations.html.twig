@@ -1,0 +1,36 @@
+<div class="mb-5 w-1/2">
+    <table class="w-full">
+        <thead>
+            <tr>
+                <th class="mx-1">Somme</th>
+                <th class="">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set total = 0 %}
+            {% for cotisation in _context["entity"].instance.cotisations | reverse %}
+                <tr>
+                    <td>{{cotisation.amount}}</td>
+                    <td>{{cotisation.createdAt| date('d M y')}}</td>
+                    {% set total = total + cotisation.amount %}
+                </tr>   
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="w-1/2">
+    <table class="w-full">
+    <thead>
+        <tr>
+            <th class="mx-1">Total Cotisés</th>
+            <th>Reste à cotiser</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{total}}</td>
+            <td>{{ 35500 - total }}</td>
+        </tr>
+    </tbody>
+</table>
+</div>
